@@ -1,17 +1,22 @@
 import tweepy
-import time
+import os
 
-# Replace these with your own credentials
-API_KEY = 'AGpHvvvOakjeD35MFVvaCV92w'
-API_SECRET_KEY = 'APRJL8yZHeYN7w9mBHqIEhReupBXJprnCvaDjl6EiiZGiweUIo'
-ACCESS_TOKEN = '1696145368311037952-6jrKeVviJAtRMVsKLatH52ZhZYsLu5'
-ACCESS_TOKEN_SECRET = 'kn3wgwPBZFCEz6gOuCrzA8bRoVvvMeCZxZq6J2lE3677E'
+def handler(request):
+    API_KEY = os.getenv('API_KEY')
+    API_SECRET_KEY = os.getenv('API_SECRET_KEY')
+    ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
+    ACCESS_TOKEN_SECRET = os.getenv('ACCESS_TOKEN_SECRET')
 
-# Authenticate to Twitter
-auth = tweepy.OAuth1UserHandler(API_KEY, API_SECRET_KEY, ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
-api = tweepy.API(auth)
+    auth = tweepy.OAuth1UserHandler(API_KEY, API_SECRET_KEY, ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+    api = tweepy.API(auth)
 
-# Verify authentication
+    try:
+        api.verify_credentials()
+        print("Authentication OK")
+    except Exception as e:
+        return str(e)
+
+    # Verify authentication
 try:
     api.verify_credentials()
     print("Authentication OK")
@@ -66,3 +71,8 @@ while True:
     SINCE_ID = check_mentions(api, ["hello"], SINCE_ID)
     retweet_hashtag(api, HASHTAG)
     time.sleep(60)
+
+return "Bot executed successfully!"
+
+if __name__ == "__main__":
+    handler(None)
